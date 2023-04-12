@@ -5,7 +5,7 @@ liorf:
   pointCloudTopic: "/ouster/points"               # Point cloud data
   imuTopic: "/imu/data_raw"                         # IMU data
   odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
-  gpsTopic: "odometry/gpsz"                   # GPS odometry topic from navsat, see module_navsat.launch file
+  gpsTopic: "/GNSSNavSatFix"                   # GPS odometry topic from navsat, see module_navsat.launch file
 
   # Frames
   lidarFrame: "base_link"
@@ -14,8 +14,8 @@ liorf:
   mapFrame: "map"
 
   # GPS Settings
-  useImuHeadingInitialization: false           # if using GPS data, set to "true"
-  useGpsElevation: false                      # if GPS elevation is bad, set to "false"
+  useImuHeadingInitialization: true           # if using GPS data, set to "true"
+  useGpsElevation: true                      # if GPS elevation is bad, set to "false"
   gpsCovThreshold: 2.0                       # m^2, threshold for using GPS data
   poseCovThreshold: 25.0                      # m^2, threshold for using GPS data
   
@@ -39,7 +39,8 @@ liorf:
   imuGyrNoise: 1.5636343949698187e-03
   imuAccBiasN: 6.4356659353532566e-05
   imuGyrBiasN: 3.5640318696367613e-05
-  imuGravity: 9.827702621508674
+  # imuGravity: 9.827702621508674
+  imuGravity: 9.828950399452472 # Obtained from city_drive.bag
   imuRPYWeight: 0.01
 
   # Extrinsics: T_lb (lidar -> imu)

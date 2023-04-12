@@ -1474,6 +1474,8 @@ public:
                 gtSAMgraph.add(gps_factor);
 
                 aLoopIsClosed = true;
+
+                std::cout << "Added gps factor" << std::endl;
                 break;
             }
         }

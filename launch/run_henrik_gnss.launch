@@ -3,7 +3,7 @@
     <arg name="project" default="liorf"/>
     
     <!-- Parameters -->
-    <rosparam file="$(find liorf)/config/henrik_config.yaml" command="load" />
+    <rosparam file="$(find liorf)/config/henrik_config_gnss.yaml" command="load" />
 
     <!--- LOAM -->
     <include file="$(find liorf)/launch/include/module_loam.launch" />
