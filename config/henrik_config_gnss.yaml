@@ -5,7 +5,10 @@ liorf:
   pointCloudTopic: "/ouster/points"               # Point cloud data
   imuTopic: "/imu/data_raw"                         # IMU data
   odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
-  gpsTopic: "/GNSSNavSatFix"                   # GPS odometry topic from navsat, see module_navsat.launch file
+  gpsTopic: "/GNSSNavSatFixNOT"                   # GPS odometry topic from navsat, see module_navsat.launch file
+  gpsBaseLineTopic: "/GNSSBaseLineTopic"                   # GPS Base Line topic
+  gpsWithLeverArmTopic: /GNSSNavSatFix
+
 
   # Frames
   lidarFrame: "base_link"
