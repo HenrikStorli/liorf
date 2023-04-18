@@ -315,7 +315,7 @@ public:
 
     void gpsBaseLineHandler(const nav_msgs::Odometry::ConstPtr& gpsBaseLineMsg)
     {
-        std::cout << "receiver BaseLineMsg" << std::endl;
+        // std::cout << "receiver BaseLineMsg" << std::endl;
         // nav_msgs::Odometry gps_odomrelpos;
         // gps_odomrelpos.header = gpsBaseLineMsg->header;
         // gps_odomrelpos.pose.pose.position = gpsBaseLineMsg->pose.pose.position;
@@ -346,7 +346,7 @@ public:
 
     void gpsWithLeverArmHandler(const sensor_msgs::NavSatFixConstPtr& gpsWithLeverArmMsg)
     {
-        std::cout << "receiver gpsWithLeverArmMsg" << std::endl;
+        // std::cout << "receiver gpsWithLeverArmMsg" << std::endl;
 
         if (gpsWithLeverArmMsg->status.status != 0)
             return;
@@ -360,14 +360,16 @@ public:
 
         gps_trans_.Forward(gpsWithLeverArmMsg->latitude, gpsWithLeverArmMsg->longitude, gpsWithLeverArmMsg->altitude, trans_local_[0], trans_local_[1], trans_local_[2]);
         
-        std::cout << "Trans_local: " << trans_local_ << std::endl;
-        
+        // std::cout << "Trans_local: " << trans_local_ << std::endl;
+
+        // Eigen::Vector3d p_mb_b__ENU{0.64413958, 0.88507261, -0.09013786};
+
         nav_msgs::Odometry gps_odom;
         gps_odom.header = gpsWithLeverArmMsg->header;
         gps_odom.header.frame_id = "map";
-        gps_odom.pose.pose.position.x = trans_local_[0];
-        gps_odom.pose.pose.position.y = trans_local_[1];
-        gps_odom.pose.pose.position.z = trans_local_[2];
+        gps_odom.pose.pose.position.x = trans_local_[0] - p_mb_b__ENU[0];
+        gps_odom.pose.pose.position.y = trans_local_[1] - p_mb_b__ENU[1];
+        gps_odom.pose.pose.position.z = trans_local_[2] - p_mb_b__ENU[2];
         gps_odom.pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, 0.0);
         pubGpsOdom.publish(gps_odom);
         gpsWithLeverArmQueue.push_back(gps_odom);
@@ -1545,11 +1547,8 @@ public:
                 Vector3 << max(noise_x, 1.0f), max(noise_y, 1.0f), max(noise_z, 1.0f);
                 noiseModel::Diagonal::shared_ptr gps_noise = noiseModel::Diagonal::Variances(Vector3);
                 gtsam::GPSFactor gps_factor(cloudKeyPoses3D->size(), gtsam::Point3(gps_x, gps_y, gps_z), gps_noise);
-                // gtsam::GPSWithLeverArmFactor gpsWithLeverArm_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(1,2,3), gps_noise);
-                // gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(1,2,3), gps_noise);
                 gtSAMgraph.add(gps_factor);
-                // gtSAMgraph.add(gpsWithLeverArm_factor);
-                // gtSAMgraph.add(gpsBaseLine_factor);
+
 
                 aLoopIsClosed = true;
 
@@ -1635,11 +1634,14 @@ public:
                 // gtsam::GPSWithLeverArmFactor gpsWithLeverArm_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(1,2,3), gps_noise);
 
                 if (thisGPS.child_frame_id == "rover1") {
-                    gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(-2.838,-0.4975,0), gps_noise);
+                    // gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(-2.838,-0.4975,0), gps_noise);
+                    gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), p_mb_r1__b, gps_noise);
+
                     gtSAMgraph.add(gpsBaseLine_factor);
                     std::cout << "Added GPSBaselineFactor for rover1" << std::endl;
                 } else if (thisGPS.child_frame_id == "rover2") {
-                    gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(-2.838,0.5025,0), gps_noise);
+                    // gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(-2.838,0.5025,0), gps_noise);
+                    gtsam::GPSBaselineFactor gpsBaseLine_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), p_mb_r2__b, gps_noise);
                     gtSAMgraph.add(gpsBaseLine_factor);
                     std::cout << "Added GPSBaselineFactor for rover2" << std::endl;
                 }
@@ -1721,8 +1723,8 @@ public:
                 gtsam::Vector Vector3(3);
                 Vector3 << max(noise_x, 1.0f), max(noise_y, 1.0f), max(noise_z, 1.0f);
                 noiseModel::Diagonal::shared_ptr gps_noise = noiseModel::Diagonal::Variances(Vector3);
-                gtsam::GPSWithLeverArmFactor gpsWithLeverArm_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(1.097,0.002,0.0546), gps_noise);
-
+                // gtsam::GPSWithLeverArmFactor gpsWithLeverArm_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), gtsam::Vector3(1.097,0.002,0.0546), gps_noise);
+                gtsam::GPSWithLeverArmFactor gpsWithLeverArm_factor(cloudKeyPoses3D->size(),gtsam::Point3(gps_x, gps_y, gps_z), p_b_mb__b, gps_noise);
                 gtSAMgraph.add(gpsWithLeverArm_factor);
 
                 aLoopIsClosed = true;

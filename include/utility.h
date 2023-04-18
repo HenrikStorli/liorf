@@ -123,6 +123,18 @@ public:
     Eigen::Vector3d extTrans;
     Eigen::Quaterniond extQRPY;
 
+    // GNSS Lever Arms
+    vector<double> p_b_mb__b_V;
+    vector<double> p_mb_r1__b_V;
+    vector<double> p_mb_r2__b_V;
+    vector<double> p_mb_b__ENU_V;
+
+
+    Eigen::Vector3d p_b_mb__b;
+    Eigen::Vector3d p_mb_r1__b;
+    Eigen::Vector3d p_mb_r2__b;
+    Eigen::Vector3d p_mb_b__ENU;
+
     // voxel filter paprams
     float mappingSurfLeafSize ;
     float surroundingKeyframeMapLeafSize;
@@ -224,6 +236,18 @@ public:
         nh.param<vector<double>>("liorf/extrinsicRot", extRotV, vector<double>());
         nh.param<vector<double>>("liorf/extrinsicRPY", extRPYV, vector<double>());
         nh.param<vector<double>>("liorf/extrinsicTrans", extTransV, vector<double>());
+
+        nh.param<vector<double>>("liorf/p_b_mb__b", p_b_mb__b_V, vector<double>());
+        nh.param<vector<double>>("liorf/p_mb_r1__b", p_mb_r1__b_V, vector<double>());
+        nh.param<vector<double>>("liorf/p_mb_r2__b", p_mb_r2__b_V, vector<double>());
+        nh.param<vector<double>>("liorf/p_mb_b__ENU", p_mb_b__ENU_V, vector<double>());
+
+        p_b_mb__b = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(p_b_mb__b_V.data(), 3, 1);
+        p_mb_r1__b = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(p_mb_r1__b_V.data(), 3, 1);
+        p_mb_r2__b = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(p_mb_r2__b_V.data(), 3, 1);
+        p_mb_b__ENU = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(p_mb_b__ENU_V.data(), 3, 1);
+
+
         extRot = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(extRotV.data(), 3, 3);
         extRPY = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(extRPYV.data(), 3, 3);
         extTrans = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(extTransV.data(), 3, 1);

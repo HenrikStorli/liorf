@@ -333,9 +333,12 @@ public:
         std::lock_guard<std::mutex> lock1(imuLock);
         std::lock_guard<std::mutex> lock2(odoLock);
 
+        // std::cout << (timeScanEnd-timeScanCur) << std::endl;
+
         // make sure IMU data available for the scan
         if (imuQueue.empty() || imuQueue.front().header.stamp.toSec() > timeScanCur || imuQueue.back().header.stamp.toSec() < timeScanEnd)
         {
+            // std::cout << "If-statement True" << std::endl;
             ROS_DEBUG("Waiting for IMU data ...");
             return false;
         }

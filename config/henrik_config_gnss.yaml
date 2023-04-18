@@ -9,6 +9,21 @@ liorf:
   gpsBaseLineTopic: "/GNSSBaseLineTopic"                   # GPS Base Line topic
   gpsWithLeverArmTopic: /GNSSNavSatFix
 
+  # Lever Arms for car_test_29_03
+  p_b_mb__b: [1.097, 0.002, 0.0546]
+  p_mb_r1__b: [-2.838, -0.500, 0]
+  p_mb_r2__b: [-2.838, 0.500, 0]
+  
+  # This value is returned from the reformat bag script !! THIS IS DATASET-DEPENDENT!!!
+  p_mb_b__ENU: [ 0.64413958,  0.88507261, -0.09013786] # - /after_luch/city_drive.bag
+
+  # # Lever Arms for car_data_04_04
+  # p_b_mb__b: [1.316, 0.006, -0.2784]
+  # p_mb_r1__b: [-2.838, -0.500, 0]
+  # p_mb_r2__b: [-2.838, 0.500, 0]
+
+  # # This value is returned from the reformat bag script !! THIS IS DATASET-DEPENDENT!!!
+  # p_mb_b__ENU: [0.77928279, 1.07079738, 0.23560533]
 
   # Frames
   lidarFrame: "base_link"
